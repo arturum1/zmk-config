@@ -5,19 +5,35 @@
 # pass flags to the build command, `snippet` to add a Zephyr snippet, and
 # `artifact-name` to assign a name to distinguish build outputs from each other:
 #
-# board: [ "nice_nano" ]
-# shield: [ "corne_left", "corne_right" ]
+# board: [ "nice_nano_v2" ]
+# shield: [ "my_keyboard_left", "my_keyboard_right" ]
 # include:
 #   - board: bdn9_rev2
-#   - board: nice_nano
+#   - board: nice_nano_v2
 #     shield: reviung41
-#   - board: nice_nano
-#     shield: corne_left
+#   - board: nice_nano_v2
+#     shield: my_keyboard_left
 #     snippet: studio-rpc-usb-uart
 #     cmake-args: -DCONFIG_ZMK_STUDIO=y
-#     artifact-name: corne_left_with_studio
+#     artifact-name: my_keyboard_left_with_studio
 #
 ---
+
+# Build configuration for split keyboard (left and right halves)
+# Each half uses Nice!Nano v2 (or compatible TenStar ProMicro NRF52840)
 include:
+  # Left half (typically peripheral - connects to central via BLE)
   - board: nice_nano_v2
-    shield: my_keyboard
+    shield: my_keyboard_left
+    artifact-name: my_keyboard_left
+
+  # Right half (typically central - connects to host via USB/BLE)
+  - board: nice_nano_v2
+    shield: my_keyboard_right
+    artifact-name: my_keyboard_right
+
+  # Optional: Build with ZMK Studio support (uncomment to enable)
+  # - board: nice_nano_v2
+  #   shield: my_keyboard_left
+  #   cmake-args: -DCONFIG_ZMK_STUDIO=y
+  #   artifact-name: my_keyboard_left_studio

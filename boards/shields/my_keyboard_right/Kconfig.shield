@@ -1,0 +1,3 @@
+# Right split half shield configuration
+config SHIELD_MY_KEYBOARD_RIGHT
+    def_bool $(shields_list_contains,my_keyboard_right)

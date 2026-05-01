@@ -1,0 +1,3 @@
+# Left split half shield configuration
+config SHIELD_MY_KEYBOARD_LEFT
+    def_bool $(shields_list_contains,my_keyboard_left)

@@ -1,0 +1,8 @@
+# Left half configuration - typically set as peripheral
+# The left half connects to the central (right half) via BLE
+
+# Set this half as a peripheral (connects to central)
+CONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
+
+# If building with Studio support, enable it here
+# CONFIG_ZMK_STUDIO=y
