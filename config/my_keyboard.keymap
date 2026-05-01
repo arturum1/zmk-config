@@ -1,0 +1,58 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+
+/ {
+    behaviors {
+        /* Adjustable actuation: takes a keycode as an argument */
+        /* Usage: &he_standard ESC */
+        he_standard: he_standard {
+            compatible = "he,behavior-adjustable-actuation";
+            #binding-cells = <1>; // Changed to 1 to accept keycode
+            press-threshold-percent = <50>;
+            release-threshold-percent = <45>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            // Combined bindings for both halves (88 total)
+            bindings = <
+                /* Left Half - Row 0 (Mux 0) */
+                &he_standard ESC   &he_standard N1   &he_standard N2   &he_standard N3
+                &he_standard N4   &he_standard N5   &he_standard N6   &he_standard N7
+                &he_standard N8   &he_standard N9   &he_standard N0   &he_standard MINUS
+                &he_standard EQUAL &he_standard BSLH &he_standard GRAVE &he_standard BSPC
+
+                /* Left Half - Row 1 (Mux 1) */
+                &he_standard TAB  &he_standard Q    &he_standard W    &he_standard E
+                &he_standard R    &he_standard T    &he_standard Y    &he_standard U
+                &he_standard I    &he_standard O    &he_standard P    &he_standard LBKT
+                &he_standard RBKT &he_standard RET  &he_standard DEL  &he_standard PG_UP
+
+                /* Left Half - Row 2 (Mux 2) */
+                &he_standard LCTRL &he_standard A   &he_standard S    &he_standard D
+                &he_standard F    &he_standard G    &he_standard H    &he_standard J
+                &he_standard K    &he_standard L    &he_standard SEMI &he_standard SQT
+
+                /* Right Half - Row 3 (Mux 0) */
+                &he_standard BSPC &he_standard GRAVE &he_standard BSLH &he_standard EQUAL
+                &he_standard MINUS &he_standard N0 &he_standard N9 &he_standard N8
+                &he_standard N7 &he_standard N6 &he_standard N5 &he_standard N4
+                &he_standard N3 &he_standard N2 &he_standard N1 &he_standard ESC
+
+                /* Right Half - Row 4 (Mux 1) */
+                &he_standard PG_UP &he_standard DEL &he_standard RET &he_standard RBKT
+                &he_standard LBKT &he_standard P &he_standard O &he_standard I
+                &he_standard U &he_standard Y &he_standard T &he_standard R
+                &he_standard E &he_standard W &he_standard Q &he_standard TAB
+
+                /* Right Half - Row 5 (Mux 2) */
+                &he_standard SQT &he_standard SEMI &he_standard L &he_standard K
+                &he_standard J &he_standard H &he_standard G &he_standard F
+                &he_standard D &he_standard S &he_standard A &he_standard LCTRL
+            >;
+        };
+    };
+};

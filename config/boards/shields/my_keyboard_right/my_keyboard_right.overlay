@@ -1,0 +1,37 @@
+#include "my_keyboard.dtsi"
+
+/ {
+    /* The physical kscan driver for the multiplexer */
+    kscan_phys: kscan_he {
+        compatible = "he,kscan-multiplexer";
+        label = "KSCAN_HE_PHYS_RIGHT";
+
+        select-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>,  /* D4 */
+                       <&gpio0 24 GPIO_ACTIVE_HIGH>,  /* D5 */
+                       <&gpio1 0 GPIO_ACTIVE_HIGH>,   /* D6 */
+                       <&gpio0 11 GPIO_ACTIVE_HIGH>;  /* D7 */
+
+        /* A1=AIN1, A2=AIN2, A3=AIN4 */
+        adc-channels = <&adc 4>, <&adc 2>, <&adc 1>;
+        channel-count = <16>;
+
+        v-min = <2146>;
+        v-max = <2978>;
+        adc-resolution = <12>;
+        sample-period-us = <1000>;
+    };
+
+    /* Composite kscan to add row offset for the split right side */
+    kscan0: kscan_composite {
+        compatible = "zmk,kscan-composite";
+        label = "KSCAN_HE_RIGHT";
+        rows = <3>;
+        columns = <16>;
+        row-offset = <3>;
+        kscan = <&kscan_phys>;
+    };
+
+    chosen {
+        zmk,kscan = &kscan0;
+    };
+};
