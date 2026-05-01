@@ -1,0 +1,7 @@
+# Right half configuration - typically set as central
+if SHIELD_MY_KEYBOARD_RIGHT
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif

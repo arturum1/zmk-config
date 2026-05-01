@@ -1,56 +1,44 @@
-# ZMK Custom Hall Effect Keyboard (nRF52840)
+# ZMK Configuration for 44-Key Split Hall Effect Keyboard
 
-This repository contains the ZMK firmware configuration for a custom-built 48-key Hall Effect (analog) keyboard. The project uses an **nRF52840 (Tenstar Pro Micro)** MCU, three **16-channel analog multiplexers (CD74HC4067)**, and **SS49E Hall Effect sensors**.
+This repository contains the ZMK firmware configuration for a custom split keyboard using Hall Effect sensors and Nice!Nano v2 controllers.
 
-## 🛠 Hardware Architecture
+## Hardware Configuration
 
-* **MCU:** Tenstar Pro Micro (nRF52840) - compatible with `nice_nano_v2`.
-* **Scanning:** 3x 16-channel Multiplexers.
-    * **Select Pins (S0-S3):** Shared across all muxes to Pro Micro pins 4, 5, 6, 7.
-    * **Analog Outputs:** Connected to ADC channels AIN6, AIN5, and AIN0.
-* **Sensors:** SS49E Hall Effect sensors (Ratiometric).
-* **RGB:** WS2812B LED strip connected to Pin 3.
+- **Controller**: Nice!Nano v2 (nRF52840)
+- **Matrix**: 44 sensors per half, multiplexed via CD74HC4067 (3 mux per side)
+- **Multiplexer Pins**:
+  - S0-S3: D4, D5, D6, D7 (P0.22, P0.24, P1.00, P0.11)
+- **ADC Channels**:
+  - Mux 0 → A3 (AIN4 / Channel 4)
+  - Mux 1 → A2 (AIN2 / Channel 2)
+  - Mux 2 → A1 (AIN1 / Channel 1)
+- **RGB Underglow**: MOSI on D2 (P0.06), SCK on D3 (P0.17)
 
-## 📂 Key Project Files
+## Project Structure
 
-If you want to modify your keyboard in the future, these are the files you need to know about:
+- `config/my_keyboard.keymap`: Unified keymap for both halves.
+- `config/my_keyboard.conf`: Global configuration (Split, HE, RGB).
+- `config/boards/shields/`: Shield definitions and hardware overlays.
+  - `my_keyboard.dtsi`: Shared hardware definitions and matrix transform.
+  - `my_keyboard_left.overlay`: Left half hardware config.
+  - `my_keyboard_right.overlay`: Right half hardware config (with row offset).
 
-### 1. `boards/shields/my_keyboard/my_keyboard.overlay`
-**Purpose:** Defines the hardware "map."
-- **Edit this if:** You change which physical pins are used on the nRF52840, change the number of multiplexers, or change the number of LEDs in your strip.
-- **Key Sections:** `kscan0` (Multiplexer pins), `adc` (ADC reference and gain settings), and `led_strip`.
+## Key Features
 
-### 2. `boards/shields/my_keyboard/my_keyboard.keymap`
-**Purpose:** Defines the logic of your keys.
-- **Edit this if:** You want to change what a key does (e.g., change 'A' to 'B'), add new layers, or adjust **Actuation Behaviors** (how deep you press before a key registers).
-- **Format:** Uses `&kp` for standard keys and custom behaviors for analog features like Rapid Trigger.
+- **Adjustable Actuation**: Each key uses the `&he_standard` behavior, allowing you to set press/release thresholds (default: 50%/45%).
+- **Split Communication**: Central (Right) and Peripheral (Left) communicate wirelessly via BLE.
+- **Ratiometric ADC**: Measurement is referenced to VDD to ensure stability across battery voltage levels.
 
-### 3. `config/my_keyboard.conf`
-**Purpose:** Global firmware settings.
-- **Edit this if:** You want to enable/disable features like Bluetooth Sleep, RGB Underglow, or the Hall Effect module itself.
-- **Key Flags:** `CONFIG_ZMK_HALL_EFFECT`, `CONFIG_ZMK_RGB_UNDERGLOW`.
+## Flashing Instructions
 
-### 4. `build.yaml`
-**Purpose:** Tells GitHub Actions what to compile.
-- **Edit this if:** You rename your shield or want to build for a different board.
+1. Build the firmware using GitHub Actions.
+2. Download the artifacts:
+   - `my_keyboard_left-nice_nano_v2-zmk.uf2`
+   - `my_keyboard_right-nice_nano_v2-zmk.uf2`
+3. Connect the **Right half** (Central) and flash its UF2 file.
+4. Connect the **Left half** (Peripheral) and flash its UF2 file.
+5. They will automatically pair via Bluetooth.
 
-## ⚡ Calibration & Ratiometric Sensing
+## Calibration
 
-This project uses **Ratiometric ADC Sensing**. The ADC reference is set to `VDD/4` and Gain is set to `1/4`. This ensures that sensor readings remain consistent even if the battery voltage fluctuates.
-
-### How to Calibrate:
-1. Connect the keyboard via USB.
-2. Open a serial terminal (e.g., `screen /dev/ttyACM0 115200`).
-3. Use the Hall Effect module commands to record `v-min` (rest) and `v-max` (fully depressed) for your specific sensors.
-4. These values are stored in the nRF52840's Non-Volatile Storage (NVS) and persist across reboots.
-
-## 🚀 Building & Flashing
-
-This repo is set up for **GitHub Actions**:
-1. Push your changes to the `main` branch.
-2. Download the `.uf2` file from the **Actions** tab on GitHub.
-3. Double-tap Reset on your keyboard to enter bootloader mode.
-4. Drag and drop the `.uf2` file into the USB drive.
-
----
-*Note: This project utilizes the [zmk-feature-hall-effect](https://github.com/cr3eperall/zmk-feature-hall-effect) community module.*
+Use the ZMK serial console to perform runtime calibration of your Hall Effect sensors. This will save the optimal `v-min` and `v-max` values to the chip's NVS memory.

@@ -1,0 +1,50 @@
+#include "../my_keyboard/my_keyboard.dtsi"
+
+/ {
+    kscan0: kscan_he {
+        compatible = "he,kscan-multiplexer";
+        label = "KSCAN_HE_LEFT";
+
+        address-gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>,  /* D4 */
+                        <&gpio0 24 GPIO_ACTIVE_HIGH>,  /* D5 */
+                        <&gpio1 0 GPIO_ACTIVE_HIGH>,   /* D6 */
+                        <&gpio0 11 GPIO_ACTIVE_HIGH>;  /* D7 */
+
+        kscan-forwarder = <&kscan_forwarder>;
+        
+        /* 3 Mux Outputs */
+        mux_0 {
+            io-channels = <&adc 4>; /* A3 */
+            address-range-min = <0>;
+            address-range-max = <15>;
+        };
+
+        mux_1 {
+            io-channels = <&adc 2>; /* A2 */
+            address-range-min = <0>;
+            address-range-max = <15>;
+        };
+
+        mux_2 {
+            io-channels = <&adc 1>; /* A1 */
+            address-range-min = <0>;
+            address-range-max = <11>;
+        };
+    };
+
+    input {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        /* Send events to central */
+        left_split: input_split@1 {
+            compatible = "he,input-split";
+            reg = <0x01>;
+            device = <&kscan0>;
+        };
+    };
+
+    chosen {
+        zmk,kscan = &kscan0;
+    };
+};

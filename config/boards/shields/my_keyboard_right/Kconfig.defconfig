@@ -1,8 +1,0 @@
-# Right half configuration - typically set as central
-# The right half connects to the host and acts as the central for the split
-
-# Set this half as the central (connects to host via USB/BLE)
-CONFIG_ZMK_SPLIT_ROLE_CENTRAL=y
-
-# If building with Studio support, enable it here
-# CONFIG_ZMK_STUDIO=y

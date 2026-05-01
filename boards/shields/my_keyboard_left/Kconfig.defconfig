@@ -1,0 +1,7 @@
+# Left half configuration - typically set as peripheral
+if SHIELD_MY_KEYBOARD_LEFT
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default n
+
+endif
